@@ -1,0 +1,84 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: postgres:10.3
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+      - ./data/postgres/init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD=PostgresPassword
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8181:8080"
+  jira:
+    image: eagerminds/atlassian-jira-server
+    restart: always
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - CATALINA_CONNECTOR_PROXYNAME=jira-custom-subdomain.your-domain.ltd
+      - CATALINA_CONNECTOR_PROXYPORT=80
+      - CATALINA_CONNECTOR_SCHEME=http
+      - CATALINA_CONNECTOR_SECURE=false
+    volumes:
+      - ./data/jira/data:/var/atlassian/jira
+      - ./data/jira/logs:/opt/atlassian/jira/logs
+  confluence:
+    image: eagerminds/atlassian-confluence-server
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - CATALINA_CONNECTOR_PROXYNAME=confluence-custom-subdomain.your-domain.ltd
+      - CATALINA_CONNECTOR_PROXYPORT=80
+      - CATALINA_CONNECTOR_SCHEME=http
+      - CATALINA_CONNECTOR_SECURE=false
+    volumes:
+      - ./data/confluence/data:/var/atlassian/application-data/confluence
+      - ./data/confluence/logs:/opt/atlassian/confluence/logs
+  bitbucket:
+    image: eagerminds/atlassian-bitbucket-server
+    ports:
+      - "7990:7990"
+      - "7999:7999"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - CATALINA_CONNECTOR_PROXYNAME=bitbucket-custom-subdomain.your-domain.ltd
+      - CATALINA_CONNECTOR_PROXYPORT=80
+      - CATALINA_CONNECTOR_SCHEME=http
+      - CATALINA_CONNECTOR_SECURE=false
+    volumes:
+      - ./data/bitbucket/data:/var/atlassian/application-data/bitbucket
+      - ./data/bitbucket/logs:/opt/atlassian/bitbucket/logs
+  bamboo:
+    image: eagerminds/atlassian-bamboo-server
+    ports:
+      - "8085:8085"
+      - "54663:54663"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - CATALINA_CONNECTOR_PROXYNAME=bamboo-custom-subdomain.your-domain.ltd
+      - CATALINA_CONNECTOR_PROXYPORT=80
+      - CATALINA_CONNECTOR_SCHEME=http
+      - CATALINA_CONNECTOR_SECURE=false
+    volumes:
+      - ./data/bamboo/data:/var/atlassian/application-data/bamboo
+      - ./data/bamboo/logs:/opt/atlassian/bamboo/logs
