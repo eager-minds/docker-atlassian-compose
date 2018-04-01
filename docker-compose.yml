@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   postgres:
-    image: postgres:10.3
+    image: postgres:9.5
     restart: always
     ports:
       - "5432:5432"
@@ -19,7 +19,7 @@ services:
     ports:
       - "8181:8080"
   jira:
-    image: eagerminds/atlassian-jira-server
+    image: eagerminds/atlassian-jira-server:7.8.1
     restart: always
     ports:
       - "8080:8080"
@@ -35,7 +35,7 @@ services:
       - ./data/jira/data:/var/atlassian/jira
       - ./data/jira/logs:/opt/atlassian/jira/logs
   confluence:
-    image: eagerminds/atlassian-confluence-server
+    image: eagerminds/atlassian-confluence-server:6.8.0
     ports:
       - "8090:8090"
       - "8091:8091"
@@ -51,7 +51,7 @@ services:
       - ./data/confluence/data:/var/atlassian/application-data/confluence
       - ./data/confluence/logs:/opt/atlassian/confluence/logs
   bitbucket:
-    image: eagerminds/atlassian-bitbucket-server
+    image: eagerminds/atlassian-bitbucket-server:5.9.0
     ports:
       - "7990:7990"
       - "7999:7999"
@@ -67,7 +67,7 @@ services:
       - ./data/bitbucket/data:/var/atlassian/application-data/bitbucket
       - ./data/bitbucket/logs:/opt/atlassian/bitbucket/logs
   bamboo:
-    image: eagerminds/atlassian-bamboo-server
+    image: eagerminds/atlassian-bamboo-server:6.4.1
     ports:
       - "8085:8085"
       - "54663:54663"
